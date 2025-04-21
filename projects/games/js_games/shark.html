@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+
+  <!-- p5play -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/p5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/addons/p5.sound.min.js"></script>
+
+  <script src="https://p5play.org/v3/planck.min.js"></script>
+  <script src="https://p5play.org/v3/p5play.js"></script>
+  <script src = "assets"></script>
+
+
+</head>
+
+<body>
+  
+</body>
+
+</html>
+<script>
+
+
+  let sf;
+  let ws;
+  let bomb;
+  let star;
+  let walls;
+  let maze;
+  let por;
+  let exit;
+  let player;
+  let starCount = 0;
+  let dead = false;
+  let lastExecutionTime = 0;
+
+
+  function preload(){
+    sfImg = loadImg('assets/sf.png');
+    wsImg = loadImg('assets/ws.png');
+    bombImg = loadImg('assets/bomb.png');
+    bgImg = loadImg('assets/bg.png');
+    deathImg = loadImg('assets/die.gif');
+    port = loadImg('assets/port.png');
+  }
+
+  function setup(){
+    createCanvas(1000, 500);
+
+    player = new Sprite(wsImg, 50, 50, 50, 20);
+
+    
+    star0 = new Sprite(sfImg, 950, 50, 20, 20);
+    star1 = new Sprite(sfImg, 950, 350, 20, 20);
+    star2 = new Sprite(sfImg, 50, 350, 20, 20);
+    star3 = new Sprite(sfImg, 20, 150, 20, 20);
+    star4 = new Sprite(sfImg, 750, 150, 20, 20);
+    star5 = new Sprite(sfImg, 370, 350, 20, 20);
+
+    
+    bomb = new Group();
+    new bomb.Sprite(bombImg, 850, 20, 20, 20);
+    new bomb.Sprite(bombImg, 800, 420, 20, 20);
+    new bomb.Sprite(bombImg, 400, 250, 20, 20);
+
+    por1 = new Sprite(port, 150, 150, 20, 20);
+    por2 = new Sprite(port, 600, 150, 20, 20);
+    
+
+    walls = new Group();
+
+    new walls.Sprite(0, 0, 10000, 10, 's');
+    new walls.Sprite(0, 250, 10, 1000, 's');
+    new walls.Sprite(1000, 250, 10, 1000, 's');
+    new walls.Sprite(0, 500, 10000, 10, 's');
+    walls.color = 'black';
+
+    maze = new Group();
+    new maze.Sprite(75, 150, 10, 100, 's');
+    new maze.Sprite(350, 150, 10, 100, 's');
+    new maze.Sprite(213, 100, 285, 10, 's');
+    new maze.Sprite(213, 200, 285, 10, 's');
+    new maze.Sprite(0, 100, 200, 10, 's');
+
+    new maze.Sprite(100, 300, 200, 10, 's');
+    new maze.Sprite(200, 400, 10, 210, 's');
+
+    new maze.Sprite(650, 100, 350, 10, 's');
+    new maze.Sprite(650, 200, 350, 10, 's');
+    new maze.Sprite(820, 150, 10, 100, 's');
+    new maze.Sprite(480, 150, 10, 100, 's');
+    new maze.Sprite(850, 200, 350, 10, 's');
+    new maze.Sprite(800, 300, 950, 10, 's');
+    new maze.Sprite(900, 0, 10, 300, 's'); 
+
+    new maze.Sprite(900, 350, 10, 100, 's');
+    new maze.Sprite(330, 350, 10, 100, 's');
+    new maze.Sprite(650, 400, 300, 10, 's');
+    new maze.Sprite(505, 450, 10, 100, 's');
+    new maze.Sprite(440, 350, 10, 100, 's');
+    new maze.Sprite(350, 400, 50, 10, 's')
+
+    maze.color = 'black';
+  }
+
+  function draw(){
+    background(bgImg);
+    wsImg.resize(100, 50);
+    sfImg.resize(50, 50);
+    bombImg.resize(50, 50);
+    port.resize(70, 80);
+    showScore();
+    
+  //player controls
+    if(kb.pressing('left')){
+      player.vel.x = -4;
+    } else if (kb.pressing('right')){
+      player.vel.x = 4;
+    } else if(kb.pressing('up')){
+      player.vel.y = -4;
+    } else if(kb.pressing('down')){
+      player.vel.y = 4;
+    } else {
+      player.vel.x = 0;
+      player.vel.y = 0;
+    }
+
+    
+    if (player.collides(star0)){
+      starCount += 1;
+      star0.remove();
+    } if (player.collides(star1)){
+      starCount +=1;
+      star1.remove();
+    }if (player.collides(star2)){
+      starCount +=1;
+      star2.remove();
+    }if (player.collides(star3)){
+      starCount +=1;
+      star3.remove();
+    }if (player.collides(star4)){
+      starCount +=1;
+      star4.remove();
+    } if (player.collides(star5)){
+      starCount += 1;
+      star5.remove();
+    } 
+    if (player.collides(bomb)){
+      deathS();
+
+    } 
+  }
+
+
+  function showScore(){
+    fill(255);
+    textAlign(LEFT);
+    textSize(20);
+    text('Score = ' + starCount, 10, 30);
+  }
+
+  function winScreen(){
+    
+  }
+
+  function deathS(){
+    death = new Sprite(deathImg, player.x, player.y, 200, 200);
+  }
+
+
+
+  function deathScreen(){
+    
+    death.remove();
+    star1.remove();
+    star2.remove();
+    star3.remove();
+    star4.remove();
+    star5.remove();
+    player.remove();
+    walls.remove();
+    maze.remove();
+    
+    background(0);
+    
+    fill(255);
+    textAlign(CENTER);
+    textStyle()
+    text('You died');
+
+    
+  }
+
+</script>
